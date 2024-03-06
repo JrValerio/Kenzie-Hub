@@ -1,0 +1,82 @@
+@import "./global.scss";
+@import "./typography.scss";
+
+.btn {
+  width: 18.5rem;
+  height: 2.4065rem;
+  padding: 0rem 1.39588rem;
+  justify-content: center;
+  align-items: center;
+  gap: 0.6345rem;
+  flex-shrink: 0;
+  border-radius: 0.25rem;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &--primary {
+    @extend .btn;
+    border: 1.218px solid $color-primary;
+    background-color: $color-primary;
+    color: $grey-0;
+
+    &:hover {
+      background-color: $color-primary-focus;
+    }
+  }
+
+  &--secondary {
+    @extend .btn;
+    border: 1.218px solid $color-secondary;
+    background-color: $color-secondary;
+    color: $grey-0;
+
+    &:hover {
+      background-color: $color-secondary-focus;
+    }
+  }
+
+  &--negative {
+    @extend .btn;
+    border: 1.218px solid $color-primary-negative;
+    background-color: $color-primary-negative;
+    color: $grey-0;
+
+    &:hover {
+      background-color: darken($color-primary-negative, 10%);
+    }
+  }
+
+  &--disabled {
+    background-color: $grey-1;
+    color: $grey-3;
+    cursor: not-allowed;
+  }
+
+  &:disabled:hover {
+    background-color: $grey-2;
+  }
+}
+
+.btnHeader {
+  width: 4rem;
+  height: 2rem;
+  font-size: 0.59963rem;
+  display: inline-flex;
+  padding: 0rem 1.01519rem;
+  justify-content: center;
+  align-items: center;
+  gap: 0.6345rem;
+  flex-shrink: 0;
+  border-radius: 0.25rem;
+  color: $grey-0;
+  background-color: $grey-3;
+  border: 1.218px solid $grey-3;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: darken($grey-2, 10%);
+  }
+}

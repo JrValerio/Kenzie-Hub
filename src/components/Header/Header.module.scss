@@ -1,0 +1,34 @@
+@import "../../styles/global.scss";
+@import "../../styles/typography.scss";
+
+.appHeader {
+  max-width: 20.5rem;
+  background-color: $grey-4;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-inline: auto;
+
+  &.userPage {
+    @media (min-width: 520px) {
+      max-width: 50rem;
+      height: 4.5rem;
+      flex-shrink: 0;
+      justify-content: space-between;
+    }
+  }
+
+  &.btnHeader .headerContent {
+    justify-content: space-between;
+  }
+
+  .headerContent {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 4rem;
+  }
+}
