@@ -25,16 +25,16 @@ export const RegisterForm = () => {
 
   const onSubmit = async (data) => {
     const { confirmPassword, ...userData } = data;
-
+    
     try {
       await signUp(userData);
       showToast("Cadastro realizado com sucesso!", "success");
       navigate("/");
-
     } catch (error) {
       showToast(error.message || "Erro ao registrar", "error");
     }
   };
+  console.log(errors)
 
   const showErrorsAsToasts = () => {
     Object.values(errors).forEach((error) => {
@@ -43,7 +43,10 @@ export const RegisterForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit, showErrorsAsToasts)}>
+    <form
+      className="formContainer"
+      onSubmit={handleSubmit(onSubmit, showErrorsAsToasts)}
+    >
       <InputForm
         label="Nome"
         placeholder="Digite seu nome"
@@ -88,10 +91,7 @@ export const RegisterForm = () => {
       />
       <div className="selectModule">
         <label className="label">Selecionar Módulo</label>
-        <select
-          {...register("course_module")}
-          error={errors.course_module?.message}
-        >
+        <select {...register("course_module")}>
           <option value="">Selecionar Módulo</option>
           <option value="Primeiro Módulo">Primeiro Módulo</option>
           <option value="Segundo Módulo">Segundo Módulo</option>
@@ -100,6 +100,9 @@ export const RegisterForm = () => {
           <option value="Quinto Módulo">Quinto Módulo</option>
           <option value="Sexto Módulo">Sexto Módulo</option>
         </select>
+        {errors.course_module && (
+          <span className="error">{errors.course_module.message}</span>
+        )}
       </div>
       <Button type="submit" text="Cadastrar" variant="negative" />
     </form>

@@ -3,7 +3,7 @@
 
 .registerContainer {
   max-width: 20.5rem;
-  height: 60rem;
+  height: 65rem;
   display: flex;
   flex-direction: column;
   justify-content: start;
@@ -27,7 +27,7 @@
 }
 .registerContent {
   width: 18rem;
-  height: 50rem;
+  min-height: 55rem;
   background-color: $grey-3;
   padding: 0 20px;
   border-radius: 4px;
@@ -47,7 +47,7 @@
 }
 .loginContent {
   width: 18rem;
-  height: 28rem;
+  height: 30rem;
   background-color: $grey-3;
   padding: 0 20px;
   border-radius: 4px;

@@ -2,6 +2,11 @@
 
 Kenzie Hub é uma aplicação web desenvolvida como parte do programa de treinamento da Kenzie Academy. O projeto tem como objetivo fornecer uma plataforma onde os alunos podem registrar e acompanhar suas habilidades adquiridas ao longo do curso.
 
+## Links Importantes
+
+- **Aplicação ao Vivo**: [Kenzie Hub - Vercel](https://react-entrega-kenzie-hub-jr-valerio.vercel.app/)
+- **Código Fonte**: [GitHub - Kenzie Hub](https://github.com/Kenzie-Academy-Brasil-Developers/react-entrega-kenzie-hub-JrValerio)
+
 ## Funcionalidades
 
 - **Cadastro de Usuário**: Permite que novos usuários se cadastrem na plataforma, fornecendo informações como nome, email, senha, bio, contato e módulo do curso.

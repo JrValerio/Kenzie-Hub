@@ -1,5 +1,7 @@
 import { forwardRef } from "react";
 import "../../../styles/input.scss";
+import "../../../styles/typography.scss";
+
 
 export const InputForm = forwardRef(({ label, error, ...rest }, ref) => {
   return (
@@ -10,3 +12,4 @@ export const InputForm = forwardRef(({ label, error, ...rest }, ref) => {
     </div>
   );
 });
+

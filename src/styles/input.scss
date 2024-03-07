@@ -7,6 +7,18 @@
   justify-content: flex-start;
   align-items: flex-start;
   gap: 0.8rem;
+  position: relative;
+
+  .error {
+    position: absolute;
+    color: $negative;
+    font-size: 0.6rem;
+    bottom: -0.5rem;
+    max-height: 0.8rem;
+    overflow: auto;
+    left: 0;
+    right: 0;
+  }
 
   .inputGrid {
     position: relative;
@@ -32,7 +44,7 @@
   gap: 2rem;
   border: 1px solid $grey-2;
   border-radius: 4px;
-  margin-bottom: 1rem;
+  margin-bottom: 0.3rem;
   background-color: $grey-2;
 
   &::placeholder {
@@ -59,6 +71,8 @@ select {
   background-color: $grey-2;
   color: $grey-1;
 
+  
+
   &::placeholder {
     color: $grey-0;
   }
@@ -67,6 +81,8 @@ select {
     border-color: $grey-0;
     outline: none;
   }
+
+  
 }
 
 .selectModule {

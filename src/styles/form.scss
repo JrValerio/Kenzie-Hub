@@ -1,0 +1,22 @@
+@import "./typography.scss";
+@import "./global.scss";
+
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1.5rem;
+  position: relative;
+
+  span {
+    position: absolute;
+    color: $negative;
+    font-size: 0.6rem;
+    bottom: 4rem;
+    max-height: 0.8rem;
+    overflow: auto;
+    left: 0;
+    right: 0;
+  }
+}

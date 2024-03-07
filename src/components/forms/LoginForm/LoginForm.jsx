@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "../Button/Button";
 import { useAuth } from "../../../providers/AuthContext";
 import { showToast } from "../../Toasts/Toasts";
+import "../../../styles/form.scss";
 
 export const LoginForm = () => {
   const { signIn } = useAuth();
@@ -30,8 +31,14 @@ export const LoginForm = () => {
     resolver: zodResolver(loginFormSchema),
   });
 
+  const showErrorsAsToasts = () => {
+    Object.values(errors).forEach((error) => {
+      showToast(error.message, "error");
+    });
+  };
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form className="formContainer" onSubmit={handleSubmit(onSubmit, showErrorsAsToasts)}>
       <InputForm
         label={"Email"}
         placeholder="Digite aqui seu email"

@@ -3,7 +3,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 export const showToast = (message, type, options = {}) => {
   toast[type](message, {
-    autoClose: options.autoClose || 3000,
+    autoClose: options.autoClose || 5000,
     position: options.position || "top-right",
     closeOnClick:
       options.closeOnClick !== undefined ? options.closeOnClick : true,
