@@ -14,7 +14,6 @@ export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
-
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -24,7 +23,6 @@ export const AuthProvider = ({ children }) => {
         .then((response) => {
           setUser(response.data);
           localStorage.setItem("user", JSON.stringify(response.data));
-          
         })
         .catch((error) => {
           console.error(
@@ -80,8 +78,30 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const login = async (formData) => {
+    try {
+      await signIn(formData);
+      showToast("Login realizado com sucesso!", "success");
+      navigate("/user");
+    } catch (error) {
+      showToast(error.message || "Erro ao fazer login", "error");
+    }
+  };
+
+  const register = async (formData) => {
+    try {
+      await signUp(formData);
+      showToast("Cadastro realizado com sucesso!", "success");
+      navigate("/");
+    } catch (error) {
+      showToast(error.message || "Erro ao registrar", "error");
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ loading, user, signIn, signUp, signOut }}>
+    <AuthContext.Provider
+      value={{ loading, user, signIn, signUp, signOut, login, register }}
+    >
       {children}
     </AuthContext.Provider>
   );

@@ -1,5 +1,4 @@
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
 import { InputForm } from "../InputForm/InputForm";
 import { InputPassword } from "../InputPassword/InputPassword";
 import { loginFormSchema } from "./LoginForm.schema";
@@ -10,17 +9,10 @@ import { showToast } from "../../Toasts/Toasts";
 import "../../../styles/form.scss";
 
 export const LoginForm = () => {
-  const { signIn } = useAuth();
-  const navigate = useNavigate();
+  const { login } = useAuth();
 
   const onSubmit = async (formData) => {
-    try {
-      await signIn(formData);
-      showToast("Login realizado com sucesso!", "success");
-      navigate("/user");
-    } catch (error) {
-      showToast(error.message || "Erro ao fazer login", "error");
-    }
+    await login(formData);
   };
 
   const {
@@ -38,7 +30,10 @@ export const LoginForm = () => {
   };
 
   return (
-    <form className="formContainer" onSubmit={handleSubmit(onSubmit, showErrorsAsToasts)}>
+    <form
+      className="formContainer"
+      onSubmit={handleSubmit(onSubmit, showErrorsAsToasts)}
+    >
       <InputForm
         label={"Email"}
         placeholder="Digite aqui seu email"

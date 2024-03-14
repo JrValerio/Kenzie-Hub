@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { InputForm } from "../InputForm/InputForm";
 import { InputPassword } from "../InputPassword/InputPassword";
@@ -11,7 +10,7 @@ import { showToast } from "../../Toasts/Toasts";
 import { useAuth } from "../../../providers/AuthContext";
 
 export const RegisterForm = () => {
-  const navigate = useNavigate();
+  const { register: registerUser } = useAuth();
 
   const {
     register,
@@ -21,20 +20,9 @@ export const RegisterForm = () => {
     resolver: zodResolver(registerFormSchema),
   });
 
-  const { signUp } = useAuth();
-
-  const onSubmit = async (data) => {
-    const { confirmPassword, ...userData } = data;
-    
-    try {
-      await signUp(userData);
-      showToast("Cadastro realizado com sucesso!", "success");
-      navigate("/");
-    } catch (error) {
-      showToast(error.message || "Erro ao registrar", "error");
-    }
+  const onSubmit = async (formData) => {
+    await registerUser(formData);
   };
-  console.log(errors)
 
   const showErrorsAsToasts = () => {
     Object.values(errors).forEach((error) => {
