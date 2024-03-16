@@ -21,6 +21,23 @@
   }
 }
 
+.title2 {
+  @include defaultTypography($font-weight: 600);
+  font-style: normal;
+  line-height: 1.75rem;
+
+  &.center {
+    text-align: center;
+  }
+}
+
+.title3 {
+  @include defaultTypography($font-size: 0.88813rem, $font-weight: 700);
+  font-style: normal;
+  margin: 0;
+  margin-bottom: 0.5rem;
+}
+
 .label {
   @include defaultTypography($font-size: 0.8rem);
 }
@@ -40,7 +57,7 @@
 }
 
 .paragraph {
-  @include defaultTypography($font-size: 1rem, $font-weight: 400);
+  @include defaultTypography($font-size: 0.8rem, $font-weight: 400);
 
   &.white {
     color: $grey-0;
@@ -57,5 +74,3 @@
   font-style: normal;
   line-height: 1.09938rem;
 }
-
-

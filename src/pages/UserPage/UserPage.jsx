@@ -1,5 +1,6 @@
 import { DefaultTemplate } from "../../components/DefaultTemplate/DefaultTemplate";
-import { Header } from "../../components/Header/Header";
+import { UserHeader } from "../../components/Header/UserHeader";
+import { TechList } from "../../components/technologies/TechList/TechList";
 import { useAuth } from "../../providers/AuthContext";
 import { useNavigate } from "react-router-dom";
 
@@ -14,19 +15,17 @@ export const UserPage = () => {
 
   return (
     <DefaultTemplate>
-      <Header showLogout={true} isUserPage={true} />
+      <UserHeader />
       <main className="userContainer">
         <div className="userInfo">
           <h1 className="title1">Olá, {user.name}</h1>
-          <p className="prompt">Primeiro módulo (Introdução ao Frontend)</p>
+          <p className="prompt">{user.course_module}</p>
         </div>
-        <h1 className="title1">Que pena! Estamos em desenvolvimento :(</h1>
-        <p className="paragraph">
-          Nossa aplicação está em desenvolvimento, em breve teremos novidades
-        </p>
+        <TechList />
       </main>
     </DefaultTemplate>
   );
 };
+
 
 

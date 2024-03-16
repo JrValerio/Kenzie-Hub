@@ -11,6 +11,7 @@
   flex-shrink: 0;
   border-radius: 0.25rem;
   border-radius: 4px;
+  font-family: $font-primary;
   font-weight: bold;
   cursor: pointer;
   transition: background-color 0.3s;
@@ -28,6 +29,17 @@
 
   &--secondary {
     @extend .btn;
+    border: 1.218px solid $color-secondary;
+    background-color: $color-secondary;
+    color: $grey-0;
+
+    &:hover {
+      background-color: $color-secondary-focus;
+    }
+  }
+
+  &--small {
+    @extend .btnForm;
     border: 1.218px solid $color-secondary;
     background-color: $color-secondary;
     color: $grey-0;
@@ -59,7 +71,7 @@
   }
 }
 
-.btnHeader {
+.btnForm {
   width: 4rem;
   height: 2rem;
   font-size: 0.59963rem;

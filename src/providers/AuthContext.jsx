@@ -13,6 +13,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [techListData, setTechListData] = useState([]);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -22,6 +23,7 @@ export const AuthProvider = ({ children }) => {
       API.get("profile")
         .then((response) => {
           setUser(response.data);
+          setTechListData(response.data.techs);
           localStorage.setItem("user", JSON.stringify(response.data));
         })
         .catch((error) => {
@@ -44,6 +46,7 @@ export const AuthProvider = ({ children }) => {
       const { user, token } = response;
 
       setUser(user);
+      setTechListData(user.techs);
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
       API.defaults.headers.common["Authorization"] = `Bearer ${token}`;
@@ -100,7 +103,17 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ loading, user, signIn, signUp, signOut, login, register }}
+      value={{
+        loading,
+        user,
+        signIn,
+        signUp,
+        signOut,
+        login,
+        register,
+        techListData,
+        setTechListData,
+      }}
     >
       {children}
     </AuthContext.Provider>

@@ -1,0 +1,181 @@
+@import "./global.scss";
+@import "./typography.scss";
+@import "./button.scss";
+
+.MuiBackdrop-root,
+.MuiDialog-root {
+  background-color: rgba(33, 37, 41, 0.8);
+}
+
+.MuiDialog-container {
+  width: 18.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 3.40919rem 1.103rem 1.60431rem 1.103rem;
+  border-radius: 0.20056rem;
+  background-color: $grey-4 transparent;
+  box-shadow: 0px 3.209px 32.087px -8.022px rgba(0, 0, 0, 0.25);
+  margin-inline: auto;
+
+  .MuiTypography-root {
+    background-color: $grey-2;
+    color: $grey-0;
+    font-family: $font-primary;
+    font-size: 1rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 1.20325rem;
+
+    .MuiButtonBase-root {
+      color: $grey-0;
+      font-family: $font-secundary;
+      font-size: 0.80219rem;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 1.3035rem;
+
+      &:hover {
+        background-color: $grey-2;
+      }
+    }
+  }
+
+  .MuiDialogContent-root {
+    background-color: $grey-3;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .MuiDialogActions-root {
+    background-color: $grey-3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 1rem;
+  }
+}
+
+.MuiFormLabel-root {
+  color: $grey-0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.8rem;
+
+  &:focus {
+    border: 1px solid $grey-2;
+  }
+}
+
+.fieldStyle {
+  @extend .label;
+  color: $grey-0;
+  margin-bottom: 0.5rem;
+
+  &:focus {
+    border: none;
+  }
+}
+
+.valueStyle {
+  width: 264.66px;
+  height: 38.5px;
+  padding: 13.03px;
+  background-color: $grey-3;
+  border-radius: 3.21px;
+  border: 0.98px solid $grey-1;
+  color: $grey-4;
+  font-size: 1rem;
+  font-family: $font-primary;
+  font-weight: 400;
+  line-height: 21.17px;
+
+  &:hover {
+    background-color: $grey-3;
+    border-color: $grey-2;
+  }
+}
+
+.MuiPaper-root {
+  border-color: $grey-1;
+}
+
+.MuiList-root {
+  background-color: $grey-1;
+  border: 0.0625rem $grey-3;
+  color: $grey-0;
+}
+
+.buttonStyle {
+  @extend .btn;
+  width: 16.5rem;
+  height: 2.5rem;
+  padding: 1rem;
+  font-size: 12.83px;
+  font-weight: 500;
+  line-height: 21.17px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1.218px solid $color-primary;
+  background-color: $color-primary;
+  color: $grey-0;
+
+  &:hover {
+    background-color: $color-primary-focus;
+  }
+}
+
+.MuiSelect-select {
+  background-color: #343b41;
+  border-color: $grey-2;
+  &:hover {
+    border-color: $grey-2;
+  }
+}
+
+.MuiInputBase-root {
+  overflow: hidden;
+  background-color: $grey-2;
+  &:hover .MuiOutlinedInput-notchedOutline {
+    border-color: $grey-2;
+  }
+}
+
+.Mui-focused {
+  border-color: $grey-2;
+}
+
+.MuiSvgIcon-root {
+  display: none;
+}
+
+.MuiOutlinedInput-notchedOutline {
+  overflow: hidden;
+}
+
+.MuiMenu-list {
+  color: $grey-0;
+  background-color: $grey-3;
+  overflow-y: auto;
+  max-height: 15rem;
+
+  &:hover {
+    background-color: darken($grey-2, 10%);
+  }
+}
+
+.error {
+  position: absolute;
+  color: $negative;
+  font-size: 0.6rem;
+  bottom: -0.9rem;
+  max-height: 0.8rem;
+  overflow: auto;
+  left: 0;
+  right: 0;
+}

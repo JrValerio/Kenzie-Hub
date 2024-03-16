@@ -1,5 +1,5 @@
 import { DefaultTemplate } from "../../components/DefaultTemplate/DefaultTemplate";
-import { Header } from "../../components/Header/Header";
+import { RegisterHeader } from "../../components/Header/RegisterHeader";
 import { RegisterForm } from "../../components/forms/RegisterForm/RegisterForm";
 import "../../styles/global.scss";
 import "../../styles/typography.scss";
@@ -7,7 +7,7 @@ import "../../styles/typography.scss";
 export const RegisterPage = () => {
   return (
     <DefaultTemplate>
-      <Header showBack />
+      <RegisterHeader />
       <main className="registerContainer">
         <div className="registerContent">
           <div className="registerInfo">
