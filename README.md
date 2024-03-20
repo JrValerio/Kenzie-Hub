@@ -1,11 +1,13 @@
 # Kenzie Hub
 
+![Kenzie Hub](https://github.com/Kenzie-Academy-Brasil-Developers/react-entrega-kenzie-hub-JrValerio/blob/main/src/assets/KenzieHub.png)
+
 Kenzie Hub é uma aplicação web desenvolvida como parte dos estudos na Kenzie Academy Brasil. O projeto tem como objetivo fornecer uma plataforma onde os alunos podem registrar e acompanhar suas habilidades adquiridas ao longo do curso.
 
 ## Links Importantes
 
-- **Aplicação ao Vivo**: [Kenzie Hub - Vercel](https://react-entrega-kenzie-hub-jr-valerio.vercel.app/)
-- **Código Fonte**: [GitHub - Kenzie Hub](https://github.com/Kenzie-Academy-Brasil-Developers/react-entrega-kenzie-hub-JrValerio)
+- **Aplicação ao Vivo**: [Kenzie Hub - Vercel](https://kenzie-hub-seven-blue.vercel.app/)
+- **Código Fonte**: [GitHub - Kenzie Hub](https://github.com/JrValerio/Kenzie-Hub)
 
 ## Funcionalidades
 
@@ -43,4 +45,3 @@ Kenzie Hub é uma aplicação web desenvolvida como parte dos estudos na Kenzie 
 - `src/utils`: Funções úteis e constantes compartilhadas.
 - `src/validation`: Esquemas de validação para formulários.
 
-![Kenzie Hub](https://github.com/Kenzie-Academy-Brasil-Developers/react-entrega-kenzie-hub-JrValerio/blob/main/src/assets/KenzieHub.png)
