@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { readDb } from "./db.js";
+import { prisma } from "./prisma.js";
 
 const DEFAULT_JWT_SECRET = "dev-jwt-secret-change-me";
 const JWT_SECRET = globalThis.process?.env?.JWT_SECRET || DEFAULT_JWT_SECRET;
@@ -40,15 +40,25 @@ export const authMiddleware = async (request, response, next) => {
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
-    const userId = decoded.sub;
-    const db = await readDb();
-    const user = db.users.find((item) => item.id === userId);
+    const userId =
+      typeof decoded === "object" && typeof decoded.sub === "string"
+        ? decoded.sub
+        : null;
+
+    if (!userId) {
+      return response.status(401).json({ message: "Invalid token" });
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { id: true },
+    });
 
     if (!user) {
       return response.status(401).json({ message: "Invalid token" });
     }
 
-    request.user = user;
+    request.user = { id: user.id };
     return next();
   } catch {
     return response.status(401).json({ message: "Invalid token" });

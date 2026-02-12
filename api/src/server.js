@@ -1,10 +1,11 @@
+import "dotenv/config";
 import bcrypt from "bcryptjs";
 import cors from "cors";
 import express from "express";
-import { v4 as uuidv4 } from "uuid";
+import { Prisma } from "@prisma/client";
 import { authMiddleware, signToken } from "./auth.js";
 import { TECH_STATUS_OPTIONS } from "./constants.js";
-import { mutateDb, readDb } from "./db.js";
+import { prisma } from "./prisma.js";
 
 const app = express();
 const PORT = Number(globalThis.process?.env?.PORT || 3333);
@@ -44,6 +45,16 @@ app.use(
 );
 app.use(express.json());
 
+const sanitizeTech = (tech) => {
+  return {
+    id: tech.id,
+    title: tech.title,
+    status: tech.status,
+    created_at: tech.createdAt,
+    updated_at: tech.updatedAt,
+  };
+};
+
 const sanitizeUser = (user) => {
   return {
     id: user.id,
@@ -51,10 +62,10 @@ const sanitizeUser = (user) => {
     email: user.email,
     bio: user.bio,
     contact: user.contact,
-    course_module: user.course_module,
-    techs: user.techs || [],
-    created_at: user.created_at,
-    updated_at: user.updated_at,
+    course_module: user.courseModule,
+    techs: Array.isArray(user.techs) ? user.techs.map(sanitizeTech) : [],
+    created_at: user.createdAt,
+    updated_at: user.updatedAt,
   };
 };
 
@@ -63,7 +74,7 @@ const isEmailValid = (email) => {
 };
 
 const decodeMojibake = (value) => {
-  if (/[ÃÂ]/.test(value)) {
+  if (/[ÃƒÃ‚]/.test(value)) {
     try {
       // Minimal compatibility fix for mis-encoded legacy strings.
       return decodeURIComponent(escape(value));
@@ -92,6 +103,12 @@ const normalizeTechStatus = (status) => {
   );
 };
 
+const isUniqueConstraintError = (error) => {
+  return (
+    error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002"
+  );
+};
+
 app.get("/health", (_request, response) => {
   return response.status(200).json({ status: "ok" });
 });
@@ -112,38 +129,31 @@ app.post("/users", async (request, response) => {
   }
 
   try {
-    const createdUser = await mutateDb(async (db) => {
-      const alreadyExists = db.users.some((user) => user.email === email);
+    const alreadyExists = await prisma.user.findUnique({ where: { email } });
 
-      if (alreadyExists) {
-        return { error: "Email already exists" };
-      }
-
-      const now = new Date().toISOString();
-      const passwordHash = await bcrypt.hash(password, 10);
-      const user = {
-        id: uuidv4(),
-        name,
-        email,
-        password: passwordHash,
-        bio,
-        contact,
-        course_module,
-        techs: [],
-        created_at: now,
-        updated_at: now,
-      };
-
-      db.users.push(user);
-      return { user };
-    });
-
-    if (createdUser.error) {
-      return response.status(409).json({ message: createdUser.error });
+    if (alreadyExists) {
+      return response.status(409).json({ message: "Email already exists" });
     }
 
-    return response.status(201).json(sanitizeUser(createdUser.user));
-  } catch {
+    const passwordHash = await bcrypt.hash(password, 10);
+    const user = await prisma.user.create({
+      data: {
+        name: String(name),
+        email: String(email),
+        passwordHash,
+        bio: String(bio),
+        contact: String(contact),
+        courseModule: String(course_module),
+      },
+      include: { techs: true },
+    });
+
+    return response.status(201).json(sanitizeUser(user));
+  } catch (error) {
+    if (isUniqueConstraintError(error)) {
+      return response.status(409).json({ message: "Email already exists" });
+    }
+
     return response.status(500).json({ message: "Internal server error" });
   }
 });
@@ -156,8 +166,10 @@ app.post("/sessions", async (request, response) => {
   }
 
   try {
-    const db = await readDb();
-    const user = db.users.find((item) => item.email === email);
+    const user = await prisma.user.findUnique({
+      where: { email: String(email) },
+      include: { techs: true },
+    });
 
     if (!user) {
       return response
@@ -165,7 +177,7 @@ app.post("/sessions", async (request, response) => {
         .json({ message: "Incorrect email/password combination" });
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
 
     if (!isPasswordValid) {
       return response
@@ -181,18 +193,32 @@ app.post("/sessions", async (request, response) => {
 });
 
 app.get("/profile", authMiddleware, async (request, response) => {
-  return response.status(200).json(sanitizeUser(request.user));
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: request.user.id },
+      include: { techs: true },
+    });
+
+    if (!user) {
+      return response.status(404).json({ message: "User not found" });
+    }
+
+    return response.status(200).json(sanitizeUser(user));
+  } catch {
+    return response.status(500).json({ message: "Internal server error" });
+  }
 });
 
 app.post("/users/techs", authMiddleware, async (request, response) => {
   const { title, status } = request.body;
-  const normalizedStatus = normalizeTechStatus(status);
 
   if (!title || !status) {
     return response
       .status(400)
       .json({ message: "Title and status are required" });
   }
+
+  const normalizedStatus = normalizeTechStatus(status);
 
   if (!normalizedStatus) {
     return response.status(400).json({
@@ -203,42 +229,36 @@ app.post("/users/techs", authMiddleware, async (request, response) => {
   }
 
   try {
-    const result = await mutateDb((db) => {
-      const user = db.users.find((item) => item.id === request.user.id);
-
-      if (!user) {
-        return { error: "User not found", status: 404 };
-      }
-
-      const duplicatedTech = user.techs.some(
-        (tech) => tech.title.toLowerCase() === String(title).toLowerCase()
-      );
-
-      if (duplicatedTech) {
-        return { error: "Technology already registered", status: 400 };
-      }
-
-      const now = new Date().toISOString();
-      const tech = {
-        id: uuidv4(),
-        title: String(title),
-        status: normalizedStatus,
-        created_at: now,
-        updated_at: now,
-      };
-
-      user.techs.push(tech);
-      user.updated_at = now;
-
-      return { tech };
+    const duplicatedTech = await prisma.tech.findFirst({
+      where: {
+        userId: request.user.id,
+        title: { equals: String(title), mode: "insensitive" },
+      },
+      select: { id: true },
     });
 
-    if (result.error) {
-      return response.status(result.status).json({ message: result.error });
+    if (duplicatedTech) {
+      return response
+        .status(400)
+        .json({ message: "Technology already registered" });
     }
 
-    return response.status(201).json(result.tech);
-  } catch {
+    const tech = await prisma.tech.create({
+      data: {
+        title: String(title),
+        status: normalizedStatus,
+        userId: request.user.id,
+      },
+    });
+
+    return response.status(201).json(sanitizeTech(tech));
+  } catch (error) {
+    if (isUniqueConstraintError(error)) {
+      return response
+        .status(400)
+        .json({ message: "Technology already registered" });
+    }
+
     return response.status(500).json({ message: "Internal server error" });
   }
 });
@@ -246,13 +266,14 @@ app.post("/users/techs", authMiddleware, async (request, response) => {
 app.put("/users/techs/:techId", authMiddleware, async (request, response) => {
   const { techId } = request.params;
   const { title, status } = request.body;
-  const normalizedStatus = status ? normalizeTechStatus(status) : null;
 
   if (!status && !title) {
     return response
       .status(400)
       .json({ message: "At least one field must be provided" });
   }
+
+  const normalizedStatus = status ? normalizeTechStatus(status) : null;
 
   if (status && !normalizedStatus) {
     return response.status(400).json({
@@ -263,50 +284,52 @@ app.put("/users/techs/:techId", authMiddleware, async (request, response) => {
   }
 
   try {
-    const result = await mutateDb((db) => {
-      const user = db.users.find((item) => item.id === request.user.id);
-
-      if (!user) {
-        return { error: "User not found", status: 404 };
-      }
-
-      const tech = user.techs.find((item) => item.id === techId);
-
-      if (!tech) {
-        return { error: "Technology not found", status: 404 };
-      }
-
-      if (title && title !== tech.title) {
-        const duplicatedTech = user.techs.some(
-          (item) =>
-            item.id !== tech.id &&
-            item.title.toLowerCase() === String(title).toLowerCase()
-        );
-
-        if (duplicatedTech) {
-          return { error: "Technology already registered", status: 400 };
-        }
-
-        tech.title = String(title);
-      }
-
-      if (status) {
-        tech.status = normalizedStatus;
-      }
-
-      const now = new Date().toISOString();
-      tech.updated_at = now;
-      user.updated_at = now;
-
-      return { tech };
+    const currentTech = await prisma.tech.findFirst({
+      where: { id: techId, userId: request.user.id },
     });
 
-    if (result.error) {
-      return response.status(result.status).json({ message: result.error });
+    if (!currentTech) {
+      return response.status(404).json({ message: "Technology not found" });
     }
 
-    return response.status(200).json(result.tech);
-  } catch {
+    const nextTitle = title ? String(title) : undefined;
+    const isChangingTitle =
+      typeof nextTitle === "string" &&
+      nextTitle.toLowerCase() !== currentTech.title.toLowerCase();
+
+    if (isChangingTitle) {
+      const duplicatedTech = await prisma.tech.findFirst({
+        where: {
+          userId: request.user.id,
+          id: { not: currentTech.id },
+          title: { equals: nextTitle, mode: "insensitive" },
+        },
+        select: { id: true },
+      });
+
+      if (duplicatedTech) {
+        return response
+          .status(400)
+          .json({ message: "Technology already registered" });
+      }
+    }
+
+    const updatedTech = await prisma.tech.update({
+      where: { id: techId },
+      data: {
+        ...(typeof nextTitle === "string" ? { title: nextTitle } : {}),
+        ...(normalizedStatus ? { status: normalizedStatus } : {}),
+      },
+    });
+
+    return response.status(200).json(sanitizeTech(updatedTech));
+  } catch (error) {
+    if (isUniqueConstraintError(error)) {
+      return response
+        .status(400)
+        .json({ message: "Technology already registered" });
+    }
+
     return response.status(500).json({ message: "Internal server error" });
   }
 });
@@ -315,36 +338,32 @@ app.delete("/users/techs/:techId", authMiddleware, async (request, response) => 
   const { techId } = request.params;
 
   try {
-    const result = await mutateDb((db) => {
-      const user = db.users.find((item) => item.id === request.user.id);
-
-      if (!user) {
-        return { error: "User not found", status: 404 };
-      }
-
-      const index = user.techs.findIndex((item) => item.id === techId);
-
-      if (index === -1) {
-        return { error: "Technology not found", status: 404 };
-      }
-
-      user.techs.splice(index, 1);
-      user.updated_at = new Date().toISOString();
-
-      return { ok: true };
+    const tech = await prisma.tech.findFirst({
+      where: { id: techId, userId: request.user.id },
+      select: { id: true },
     });
 
-    if (result.error) {
-      return response.status(result.status).json({ message: result.error });
+    if (!tech) {
+      return response.status(404).json({ message: "Technology not found" });
     }
 
+    await prisma.tech.delete({ where: { id: techId } });
     return response.status(204).send();
   } catch {
     return response.status(500).json({ message: "Internal server error" });
   }
 });
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`Kenzie Hub API listening on http://localhost:${PORT}`);
 });
 
+const shutdown = async () => {
+  server.close(async () => {
+    await prisma.$disconnect();
+    globalThis.process.exit(0);
+  });
+};
+
+globalThis.process.on("SIGINT", shutdown);
+globalThis.process.on("SIGTERM", shutdown);
