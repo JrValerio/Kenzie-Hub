@@ -1,7 +1,9 @@
 {
-  "name": "vite-project",
+  "name": "kenzie-hub",
+  "version": "2.0.0",
   "private": true,
-  "version": "0.0.0",
+  "description": "Mini fullstack product with React frontend and Express/JWT backend",
+  "packageManager": "npm@10.8.2",
   "engines": {
     "node": "24.x"
   },
