@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { useTech } from "../../../providers/TechContext";
+import PropTypes from "prop-types";
+import { useTech } from "../../../hooks/useTech";
 import { EditTechModal } from "../../modal/EditTechModal/EditTechModal";
 import del from "../../../assets/delete.svg";
 import edit from "../../../assets/edit.svg";
@@ -7,10 +8,6 @@ import edit from "../../../assets/edit.svg";
 export const TechCard = ({ tech }) => {
   const { deleteTech } = useTech();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-
-  const handleOpenEditModal = () => {
-    setIsEditModalOpen(true);
-  };
 
   const handleDelete = () => {
     deleteTech(tech.id);
@@ -49,4 +46,12 @@ export const TechCard = ({ tech }) => {
       )}
     </>
   );
+};
+
+TechCard.propTypes = {
+  tech: PropTypes.shape({
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    title: PropTypes.string.isRequired,
+    status: PropTypes.string.isRequired,
+  }).isRequired,
 };

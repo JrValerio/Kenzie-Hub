@@ -1,4 +1,5 @@
 import { forwardRef, useState } from "react";
+import PropTypes from "prop-types";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import "../../../styles/input.scss";
 
@@ -22,3 +23,10 @@ export const InputPassword = forwardRef(({ label, error, ...rest }, ref) => {
     </div>
   );
 });
+
+InputPassword.displayName = "InputPassword";
+
+InputPassword.propTypes = {
+  label: PropTypes.string.isRequired,
+  error: PropTypes.string,
+};

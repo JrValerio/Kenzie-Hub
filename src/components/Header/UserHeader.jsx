@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import logo from "../../assets/KenzieHub.svg";
 import styles from "./Header.module.scss";
-import { useAuth } from "../../providers/AuthContext";
+import { useAuth } from "../../hooks/useAuth";
 import { Button } from "../forms/Button/Button";
 
 export const UserHeader = () => {

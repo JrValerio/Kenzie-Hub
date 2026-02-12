@@ -4,8 +4,8 @@ import { InputPassword } from "../InputPassword/InputPassword";
 import { loginFormSchema } from "./LoginForm.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "../Button/Button";
-import { useAuth } from "../../../providers/AuthContext";
-import { showToast } from "../../Toasts/Toasts";
+import { useAuth } from "../../../hooks/useAuth";
+import { showToast } from "../../../utils/toast";
 import "../../../styles/form.scss";
 
 export const LoginForm = () => {

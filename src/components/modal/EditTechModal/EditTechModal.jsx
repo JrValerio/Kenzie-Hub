@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -8,7 +9,8 @@ import IconButton from "@mui/material/IconButton";
 import Select from "@mui/material/Select";
 import FormControl from "@mui/material/FormControl";
 import CloseIcon from "@mui/icons-material/Close";
-import { useTech } from "../../../providers/TechContext";
+import { TECH_STATUS_OPTIONS } from "../../../constants/techStatus";
+import { useTech } from "../../../hooks/useTech";
 import "../../../styles/modal.scss";
 
 export const EditTechModal = ({ open, onClose, tech }) => {
@@ -26,13 +28,14 @@ export const EditTechModal = ({ open, onClose, tech }) => {
     });
   }, [tech]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  const handleChange = (event) => {
+    const { name, value } = event.target;
     setEditTechData({ ...editTechData, [name]: value });
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
     try {
       await updateTech(tech.id, editTechData);
       onClose();
@@ -58,6 +61,7 @@ export const EditTechModal = ({ open, onClose, tech }) => {
           <CloseIcon />
         </IconButton>
       </DialogTitle>
+
       <form onSubmit={handleSubmit}>
         <DialogContent>
           <FormControl fullWidth margin="normal" className="noAnimation">
@@ -74,11 +78,10 @@ export const EditTechModal = ({ open, onClose, tech }) => {
               className="valueStyle noAnimation"
               disabled
             >
-              <MenuItem value={editTechData.title}>
-                {editTechData.title}
-              </MenuItem>
+              <MenuItem value={editTechData.title}>{editTechData.title}</MenuItem>
             </Select>
           </FormControl>
+
           <FormControl fullWidth margin="normal">
             <label htmlFor="tech-status" className="fieldStyle">
               Selecionar Status
@@ -92,24 +95,31 @@ export const EditTechModal = ({ open, onClose, tech }) => {
               onChange={handleChange}
               className="valueStyle noAnimation"
             >
-              <MenuItem value="Iniciante" className="valueStyle">
-                Iniciante
-              </MenuItem>
-              <MenuItem value="Intermediário" className="valueStyle">
-                Intermediário
-              </MenuItem>
-              <MenuItem value="Avançado" className="valueStyle">
-                Avançado
-              </MenuItem>
+              {TECH_STATUS_OPTIONS.map((option) => (
+                <MenuItem key={option} value={option} className="valueStyle">
+                  {option}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
         </DialogContent>
+
         <DialogActions>
-          <button type="submit" variant="primary" className="buttonStyle">
-            Salvar alterações
+          <button type="submit" className="buttonStyle">
+            Salvar alteracoes
           </button>
         </DialogActions>
       </form>
     </Dialog>
   );
+};
+
+EditTechModal.propTypes = {
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  tech: PropTypes.shape({
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    title: PropTypes.string.isRequired,
+    status: PropTypes.string.isRequired,
+  }).isRequired,
 };

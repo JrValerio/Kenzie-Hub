@@ -6,8 +6,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import "../../../styles/typography.scss";
 import "../../../styles/input.scss";
 import { Button } from "../Button/Button";
-import { showToast } from "../../Toasts/Toasts";
-import { useAuth } from "../../../providers/AuthContext";
+import { showToast } from "../../../utils/toast";
+import { useAuth } from "../../../hooks/useAuth";
 
 export const RegisterForm = () => {
   const { register: registerUser } = useAuth();

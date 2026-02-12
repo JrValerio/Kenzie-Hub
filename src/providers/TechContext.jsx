@@ -1,17 +1,14 @@
-import { createContext, useContext } from "react";
+import { createContext } from "react";
+import PropTypes from "prop-types";
 import {
   addTech as apiAddTech,
   updateTech as apiUpdateTech,
   deleteTech as apiDeleteTech,
 } from "../services/API";
-import { showToast } from "../components/Toasts/Toasts";
-import { useAuth } from "./AuthContext";
+import { showToast } from "../utils/toast";
+import { useAuth } from "../hooks/useAuth";
 
-const TechContext = createContext();
-
-export const useTech = () => {
-  return useContext(TechContext);
-};
+export const TechContext = createContext();
 
 export const TechProvider = ({ children }) => {
   const { techListData, setTechListData } = useAuth();
@@ -65,4 +62,8 @@ export const TechProvider = ({ children }) => {
       {children}
     </TechContext.Provider>
   );
+};
+
+TechProvider.propTypes = {
+  children: PropTypes.node.isRequired,
 };

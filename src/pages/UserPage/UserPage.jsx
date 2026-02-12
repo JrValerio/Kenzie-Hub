@@ -1,16 +1,14 @@
 import { DefaultTemplate } from "../../components/DefaultTemplate/DefaultTemplate";
 import { UserHeader } from "../../components/Header/UserHeader";
 import { TechList } from "../../components/technologies/TechList/TechList";
-import { useAuth } from "../../providers/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
 
 export const UserPage = () => {
   const { user } = useAuth();
-  const navigate = useNavigate();
 
   if (!user) {
-    navigate("/");
-    return null;
+    return <Navigate to="/" replace />;
   }
 
   return (

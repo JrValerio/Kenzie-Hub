@@ -2,22 +2,25 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
+import PropTypes from "prop-types";
 import Select from "@mui/material/Select";
 import FormControl from "@mui/material/FormControl";
 import MenuItem from "@mui/material/MenuItem";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
-import { useTech } from "../../../providers/TechContext";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { TECH_STATUS_OPTIONS } from "../../../constants/techStatus";
 import { availableTechs } from "../../../data/DataBase";
+import { useTech } from "../../../hooks/useTech";
+import { techSchema } from "./CreateTechModal.schema";
 import "../../../styles/modal.scss";
 import "../../../styles/input.scss";
 import "../../../styles/typography.scss";
-import { useForm } from "react-hook-form";
-import { techSchema } from "./CreateTechModal.schema";
-import { zodResolver } from "@hookform/resolvers/zod";
 
 export const CreateTechModal = ({ open, onClose }) => {
   const { addTech } = useTech();
+
   const {
     register,
     handleSubmit,
@@ -48,15 +51,16 @@ export const CreateTechModal = ({ open, onClose }) => {
           <CloseIcon />
         </IconButton>
       </DialogTitle>
+
       <form onSubmit={handleSubmit(onSubmit)}>
         <DialogContent>
           <FormControl fullWidth margin="normal" className="noAnimation">
-            <label htmlFor="tech-title" className="fieldStyle ">
+            <label htmlFor="tech-title" className="fieldStyle">
               Nome
             </label>
             <Select
               {...register("title", {
-                required: "O campo Tecnologia é obrigatório",
+                required: "O campo Tecnologia e obrigatorio",
               })}
               labelId="tech-title-label"
               id="title"
@@ -64,53 +68,48 @@ export const CreateTechModal = ({ open, onClose }) => {
               className="valueStyle noAnimation"
             >
               {availableTechs.map((tech) => (
-                <MenuItem
-                  key={tech.id}
-                  value={tech.title}
-                  className="valueStyle"
-                >
+                <MenuItem key={tech.id} value={tech.title} className="valueStyle">
                   {tech.title}
                 </MenuItem>
               ))}
             </Select>
-            {errors.title && (
-              <span className="error">{errors.title.message}</span>
-            )}
+            {errors.title && <span className="error">{errors.title.message}</span>}
           </FormControl>
+
           <FormControl fullWidth margin="normal">
             <label htmlFor="tech-status" className="fieldStyle">
               Selecionar Status
             </label>
             <Select
               {...register("status", {
-                required: "O campo Status é obrigatório",
+                required: "O campo Status e obrigatorio",
               })}
               labelId="status-label"
               id="status"
               name="status"
               className="valueStyle noAnimation"
             >
-              <MenuItem value="Iniciante" className="valueStyle">
-                Iniciante
-              </MenuItem>
-              <MenuItem value="Intermediário" className="valueStyle">
-                Intermediário
-              </MenuItem>
-              <MenuItem value="Avançado" className="valueStyle">
-                Avançado
-              </MenuItem>
+              {TECH_STATUS_OPTIONS.map((option) => (
+                <MenuItem key={option} value={option} className="valueStyle">
+                  {option}
+                </MenuItem>
+              ))}
             </Select>
-            {errors.status && (
-              <span className="error">{errors.status.message}</span>
-            )}
+            {errors.status && <span className="error">{errors.status.message}</span>}
           </FormControl>
         </DialogContent>
+
         <DialogActions>
-          <button type="submit" variant="primary" className="buttonStyle">
+          <button type="submit" className="buttonStyle">
             Cadastrar Tecnologia
           </button>
         </DialogActions>
       </form>
     </Dialog>
   );
+};
+
+CreateTechModal.propTypes = {
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
 };

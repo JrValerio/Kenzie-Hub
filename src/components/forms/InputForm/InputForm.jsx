@@ -1,7 +1,7 @@
 import { forwardRef } from "react";
+import PropTypes from "prop-types";
 import "../../../styles/input.scss";
 import "../../../styles/typography.scss";
-
 
 export const InputForm = forwardRef(({ label, error, ...rest }, ref) => {
   return (
@@ -13,3 +13,9 @@ export const InputForm = forwardRef(({ label, error, ...rest }, ref) => {
   );
 });
 
+InputForm.displayName = "InputForm";
+
+InputForm.propTypes = {
+  label: PropTypes.string.isRequired,
+  error: PropTypes.string,
+};

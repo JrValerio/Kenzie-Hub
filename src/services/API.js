@@ -1,8 +1,19 @@
 import axios from "axios";
 
+const DEFAULT_API_URL = "http://localhost:3333";
+
+export const API_BASE_URL =
+  import.meta.env.VITE_API_URL?.trim().replace(/\/+$/, "") || DEFAULT_API_URL;
+
+if (import.meta.env.DEV && !import.meta.env.VITE_API_URL) {
+  console.warn(
+    "VITE_API_URL nao definida. Usando fallback local: http://localhost:3333"
+  );
+}
+
 export const API = axios.create({
-  baseURL: "https://kenziehub.herokuapp.com/",
-  timeout: 5000,
+  baseURL: API_BASE_URL,
+  timeout: 10000,
 });
 
 API.interceptors.request.use((config) => {
@@ -13,58 +24,49 @@ API.interceptors.request.use((config) => {
   return config;
 });
 
-export const signIn = async (credentials) => {
+const mapApiError = (error, fallbackMessage) => {
+  const responseMessage = error.response?.data?.message;
+  const message = responseMessage || error.message || fallbackMessage;
+  const mappedError = new Error(message);
+
+  mappedError.status = error.response?.status;
+  mappedError.payload = error.response?.data;
+
+  return mappedError;
+};
+
+const apiRequest = async (request, fallbackMessage) => {
   try {
-    const response = await API.post("sessions", credentials);
+    const response = await request();
     return response.data;
   } catch (error) {
-    throw error.response.data;
+    throw mapApiError(error, fallbackMessage);
   }
 };
 
-export const signUp = async (newUser) => {
-  try {
-    const response = await API.post("users", newUser);
-    return response.data;
-  } catch (error) {
-    console.log("Erro na API:", error.response.data);
+export const signIn = (credentials) =>
+  apiRequest(() => API.post("sessions", credentials), "Erro ao fazer login.");
 
-    throw error.response.data;
-  }
-};
+export const signUp = (newUser) =>
+  apiRequest(() => API.post("users", newUser), "Erro ao cadastrar usuario.");
 
-export const getUserProfile = async (userId) => {
-  try {
-    const response = await API.get(`users/${userId}`);
-    return response.data;
-  } catch (error) {
-    throw error.response.data;
-  }
-};
+export const getUserProfile = (userId) =>
+  apiRequest(() => API.get(`users/${userId}`), "Erro ao buscar perfil.");
 
-export const addTech = async (newTech) => {
-  try {
-    const response = await API.post("/users/techs", newTech);
-    return response.data;
-  } catch (error) {
-    throw error.response.data;
-  }
-};
+export const addTech = (newTech) =>
+  apiRequest(
+    () => API.post("users/techs", newTech),
+    "Erro ao adicionar tecnologia."
+  );
 
-export const updateTech = async (techId, updatedTech) => {
-  try {
-    const response = await API.put(`/users/techs/${techId}`, updatedTech);
-    return response.data;
-  } catch (error) {
-    throw error.response.data;
-  }
-};
+export const updateTech = (techId, updatedTech) =>
+  apiRequest(
+    () => API.put(`users/techs/${techId}`, updatedTech),
+    "Erro ao atualizar tecnologia."
+  );
 
-export const deleteTech = async (techId) => {
-  try {
-    const response = await API.delete(`/users/techs/${techId}`);
-    return response.data;
-  } catch (error) {
-    throw error.response.data;
-  }
-};
+export const deleteTech = (techId) =>
+  apiRequest(
+    () => API.delete(`users/techs/${techId}`),
+    "Erro ao excluir tecnologia."
+  );

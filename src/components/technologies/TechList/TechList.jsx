@@ -2,7 +2,7 @@ import { useState } from "react";
 import { TechCard } from "../TechCard/TechCard";
 import plus from "../../../assets/ButtonPlus.svg";
 import { CreateTechModal } from "../../modal/CreateTechModal/CreateTechModal";
-import { useAuth } from "../../../providers/AuthContext";
+import { useAuth } from "../../../hooks/useAuth";
 
 export const TechList = () => {
   const { techListData } = useAuth();
