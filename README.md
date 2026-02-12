@@ -2,7 +2,7 @@
 
 ![Kenzie Hub](https://github.com/Kenzie-Academy-Brasil-Developers/react-entrega-kenzie-hub-JrValerio/blob/main/src/assets/KenzieHub.png)
 
-Aplicacao fullstack com frontend React e API propria (Express + JWT), configurada por ambiente, CORS por allowlist e dominio validado/normalizado. Pipeline previsivel com `dev:all`, `lint`/`build`/`audit` verdes e smoke test ponta a ponta validado.
+Aplicacao fullstack com frontend React e API propria (Express + JWT + Prisma/Postgres), configurada por ambiente, CORS por allowlist e dominio validado/normalizado. Pipeline previsivel com `dev:all`, `lint`/`build`/`audit` verdes.
 
 ## Links Importantes
 
@@ -20,7 +20,7 @@ Aplicacao fullstack com frontend React e API propria (Express + JWT), configurad
 ## Destaques
 
 - Integracao de frontend React com API REST.
-- API local incluida (Express + JWT + persistencia) para rodar offline e sem dependencias externas.
+- API incluida (Express + JWT + Prisma/Postgres) para rodar sem depender de endpoints externos.
 - Config segura via ambiente: `JWT_SECRET` obrigatorio em producao e CORS por allowlist (`FRONTEND_URL`).
 
 ## Estrutura
@@ -31,7 +31,7 @@ Aplicacao fullstack com frontend React e API propria (Express + JWT), configurad
 - `src/routers`: rotas publicas e privadas
 - `src/services`: camada de API do frontend
 - `src/styles`: estilos globais e por componente
-- `api`: backend local (Express)
+- `api`: backend (Express + Prisma + PostgreSQL)
 
 ## Configuracao da API (Frontend)
 
@@ -87,6 +87,13 @@ npm install
 ```
 
 Configure `api/.env` com base em `api/.env.example`.
+Rode migrations antes de iniciar a API pela primeira vez:
+
+```bash
+cd api
+npm run migrate:dev
+npm run seed
+```
 
 ## Case Study - Evolucao para Mini-Produto
 
@@ -97,7 +104,7 @@ A evolucao tecnica incluiu:
 
 - Remocao de dependencia externa.
 - Criacao de API propria (`Express + JWT`).
-- Persistencia local com fila de mutacao previsivel.
+- Migracao de persistencia em arquivo para Postgres com Prisma.
 
 ### Seguranca
 
