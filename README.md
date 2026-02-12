@@ -2,46 +2,118 @@
 
 ![Kenzie Hub](https://github.com/Kenzie-Academy-Brasil-Developers/react-entrega-kenzie-hub-JrValerio/blob/main/src/assets/KenzieHub.png)
 
-Kenzie Hub é uma aplicação web desenvolvida como parte dos estudos na Kenzie Academy Brasil. O projeto tem como objetivo fornecer uma plataforma onde os alunos podem registrar e acompanhar suas habilidades adquiridas ao longo do curso.
+Aplicacao fullstack com frontend React e API propria (Express + JWT), configurada por ambiente, CORS por allowlist e dominio validado/normalizado. Pipeline previsivel com `dev:all`, `lint`/`build`/`audit` verdes e smoke test ponta a ponta validado.
 
 ## Links Importantes
 
-- **Aplicação ao Vivo**: [Kenzie Hub - Vercel](https://kenzie-hub-seven-blue.vercel.app/)
-- **Código Fonte**: [GitHub - Kenzie Hub](https://github.com/JrValerio/Kenzie-Hub)
+- Aplicacao: https://kenzie-hub-seven-blue.vercel.app/
+- Codigo-fonte: https://github.com/JrValerio/Kenzie-Hub
 
 ## Funcionalidades
 
-- **Cadastro de Usuário**: Permite que novos usuários se cadastrem na plataforma, fornecendo informações como nome, email, senha, bio, contato e módulo do curso.
-- **Login e Logout**: Autenticação de usuários com login e logout.
-- **Autologin**: Mantém o usuário logado mesmo após atualizar a página ou fechar o navegador.
-- **Dashboard**: Área restrita para usuários autenticados, onde podem visualizar e gerenciar suas informações.
-- **Cadastro de Tecnologias**: Usuários podem adicionar tecnologias que estão aprendendo ou já dominam.
-- **Edição de Tecnologias**: Usuários podem editar o status das tecnologias cadastradas.
-- **Exclusão de Tecnologias**: Usuários podem remover tecnologias do seu perfil.
+- Cadastro de usuario
+- Login e logout
+- Autologin com token
+- Dashboard privada
+- CRUD de tecnologias
 
-## Destaque
+## Destaques
 
-- **Integração com API**: A aplicação se comunica com uma API para gerenciar dados de usuários e tecnologias, proporcionando uma experiência dinâmica e atualizada.
+- Integracao de frontend React com API REST.
+- API local incluida (Express + JWT + persistencia) para rodar offline e sem dependencias externas.
+- Config segura via ambiente: `JWT_SECRET` obrigatorio em producao e CORS por allowlist (`FRONTEND_URL`).
 
-## Tecnologias Utilizadas
+## Estrutura
 
-- **React**: Biblioteca JavaScript para construção da interface do usuário.
-- **React Router Dom**: Gerenciamento de rotas na aplicação.
-- **Axios**: Cliente HTTP baseado em Promises para fazer requisições à API.
-- **React Hook Form**: Biblioteca para gerenciamento de formulários.
-- **Zod**: Biblioteca para validação de esquemas.
-- **React Icons**: Biblioteca de ícones para React.
-- **Material-UI**: Biblioteca de componentes de interface do usuário para React.
-- **SASS**: Pré-processador CSS que permite escrever estilos de forma mais eficiente e modular.
+- `src/components`: componentes reutilizaveis
+- `src/pages`: paginas da aplicacao
+- `src/providers`: contextos de estado
+- `src/routers`: rotas publicas e privadas
+- `src/services`: camada de API do frontend
+- `src/styles`: estilos globais e por componente
+- `api`: backend local (Express)
 
-## Estrutura do Projeto
+## Configuracao da API (Frontend)
 
-- `src/components`: Componentes reutilizáveis como botões, inputs, toasts e modais.
-- `src/pages`: Páginas da aplicação como Login, Registro, Dashboard e Edição de Tecnologias.
-- `src/providers`: Contextos da aplicação como o contexto de autenticação e tecnologias.
-- `src/routers`: Configuração das rotas públicas e privadas.
-- `src/services`: Serviços de API para interação com o backend.
-- `src/styles`: Arquivos de estilo globais e de componentes, utilizando SASS.
-- `src/utils`: Funções úteis e constantes compartilhadas.
-- `src/validation`: Esquemas de validação para formulários.
+A URL antiga (`https://kenziehub.herokuapp.com`) nao esta mais estavel.
+O frontend usa `VITE_API_URL` e fallback para `http://localhost:3333` em desenvolvimento.
 
+1. Crie `.env` na raiz:
+
+```bash
+VITE_API_URL=http://localhost:3333
+```
+
+Voce pode copiar de `.env.example` e ajustar:
+
+```bash
+cp .env.example .env
+```
+
+2. Rode API e frontend:
+
+```bash
+npm run dev:api
+```
+
+Em outro terminal:
+
+```bash
+npm run dev
+```
+
+Ou tudo em um comando:
+
+```bash
+npm run dev:all
+```
+
+## API Local
+
+A API local esta em `api/` e expoe:
+
+- `POST /sessions`
+- `POST /users`
+- `GET /profile`
+- `POST /users/techs`
+- `PUT /users/techs/:techId`
+- `DELETE /users/techs/:techId`
+
+Instalacao da API:
+
+```bash
+cd api
+npm install
+```
+
+Configure `api/.env` com base em `api/.env.example`.
+
+## Case Study - Evolucao para Mini-Produto
+
+Este projeto comecou como uma aplicacao academica dependente de API externa instavel.
+A evolucao tecnica incluiu:
+
+### Arquitetura
+
+- Remocao de dependencia externa.
+- Criacao de API propria (`Express + JWT`).
+- Persistencia local com fila de mutacao previsivel.
+
+### Seguranca
+
+- `JWT_SECRET` obrigatorio em producao.
+- CORS restrito por `FRONTEND_URL` (allowlist).
+- `.env` isolado e ignorado no versionamento.
+
+### Dominio consistente
+
+- Validacao e normalizacao de status de tecnologia.
+- Compatibilidade com entradas acentuadas e variacoes de encoding.
+- Fonte unica de verdade para regras de dominio (front + backend).
+
+### Engenharia e Qualidade
+
+- Script unico `dev:all` (frontend + backend).
+- `npm audit` zerado.
+- `lint` e `build` verdes.
+- Smoke test ponta a ponta validando fluxo completo.
