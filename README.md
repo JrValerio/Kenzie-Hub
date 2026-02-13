@@ -1,5 +1,6 @@
 # Kenzie Hub
 
+![CI](https://github.com/JrValerio/Kenzie-Hub/actions/workflows/ci.yml/badge.svg)
 ![Kenzie Hub](https://github.com/Kenzie-Academy-Brasil-Developers/react-entrega-kenzie-hub-JrValerio/blob/main/src/assets/KenzieHub.png)
 
 Aplicacao fullstack com frontend React e API propria (Express + JWT + Prisma/Postgres), configurada por ambiente, CORS por allowlist e dominio validado/normalizado. Pipeline previsivel com `dev:all`, `lint`/`build`/`audit` verdes.
@@ -8,6 +9,15 @@ Aplicacao fullstack com frontend React e API propria (Express + JWT + Prisma/Pos
 
 - Aplicacao: https://kenzie-hub-seven-blue.vercel.app/
 - Codigo-fonte: https://github.com/JrValerio/Kenzie-Hub
+
+## Quick Start
+
+```bash
+npm ci
+npm run dev
+npm --prefix api ci
+npm --prefix api run test
+```
 
 ## Funcionalidades
 
