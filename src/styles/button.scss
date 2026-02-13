@@ -3,8 +3,10 @@
 
 .btn {
   width: 18.5rem;
+  max-width: 100%;
   height: 2.4065rem;
   display: inline-flex;
+  box-sizing: border-box;
   padding: 0rem 1.39588rem;
   justify-content: center;
   align-items: center;
