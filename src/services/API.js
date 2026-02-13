@@ -58,9 +58,6 @@ export const signIn = (credentials) =>
 export const signUp = (newUser) =>
   apiRequest(() => API.post("users", newUser), "Erro ao cadastrar usuario.");
 
-export const getUserProfile = (userId) =>
-  apiRequest(() => API.get(`users/${userId}`), "Erro ao buscar perfil.");
-
 export const addTech = (newTech) =>
   apiRequest(
     () => API.post("users/techs", newTech),
