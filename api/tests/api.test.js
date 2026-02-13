@@ -137,4 +137,20 @@ describe("Kenzie Hub API", () => {
 
     expect(response.body.message).toContain("Invalid status");
   });
+
+  it("returns 401 on /profile without token", async () => {
+    const response = await request(app).get("/profile").expect(401);
+
+    expect(response.body).toEqual({
+      message: "Missing authorization token",
+    });
+  });
+
+  it("returns 401 on /users/techs without token", async () => {
+    const response = await request(app).post("/users/techs").send({}).expect(401);
+
+    expect(response.body).toEqual({
+      message: "Missing authorization token",
+    });
+  });
 });
