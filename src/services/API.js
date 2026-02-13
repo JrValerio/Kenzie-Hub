@@ -1,13 +1,15 @@
 import axios from "axios";
 
-const DEFAULT_API_URL = "http://localhost:3333";
+const DEV_API_URL = "http://localhost:3333";
+const PROD_FALLBACK_API_URL = "https://kenzie-hub-production.up.railway.app";
+const configuredApiUrl = import.meta.env.VITE_API_URL?.trim().replace(/\/+$/, "");
+const fallbackApiUrl = import.meta.env.DEV ? DEV_API_URL : PROD_FALLBACK_API_URL;
 
-export const API_BASE_URL =
-  import.meta.env.VITE_API_URL?.trim().replace(/\/+$/, "") || DEFAULT_API_URL;
+export const API_BASE_URL = configuredApiUrl || fallbackApiUrl;
 
-if (import.meta.env.DEV && !import.meta.env.VITE_API_URL) {
+if (!configuredApiUrl) {
   console.warn(
-    "VITE_API_URL nao definida. Usando fallback local: http://localhost:3333"
+    `VITE_API_URL nao definida. Usando fallback: ${fallbackApiUrl}`
   );
 }
 
@@ -25,6 +27,12 @@ API.interceptors.request.use((config) => {
 });
 
 const mapApiError = (error, fallbackMessage) => {
+  if (!error.response && error.message === "Network Error") {
+    return new Error(
+      `Falha de conexao com a API (${API_BASE_URL}). Verifique o VITE_API_URL.`
+    );
+  }
+
   const responseMessage = error.response?.data?.message;
   const message = responseMessage || error.message || fallbackMessage;
   const mappedError = new Error(message);
