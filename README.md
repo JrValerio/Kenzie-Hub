@@ -121,7 +121,7 @@ Este projeto roda em producao com:
 
 - Root Directory: `api`
 - Build Command: `npm install`
-- Start Command: `npm run start`
+- Start Command: `npm run start:prod`
 
 4. Configure variaveis de ambiente no servico da API:
 
