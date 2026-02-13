@@ -40,7 +40,7 @@ http://localhost:3333
 - `npm run start`: inicia API sem watch.
 - `npm run generate`: gera Prisma Client.
 - `npm run migrate:dev`: cria/aplica migration em dev.
-- `npm run migrate:deploy`: aplica migrations em producao.
+- `npm run migrate:deploy`: espera DB e aplica migrations em producao.
 - `npm run seed`: popula usuario demo.
 
 ## Endpoints
