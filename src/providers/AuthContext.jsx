@@ -10,12 +10,14 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [authReady, setAuthReady] = useState(false);
   const [techListData, setTechListData] = useState([]);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
 
     if (!token) {
+      setAuthReady(true);
       return;
     }
 
@@ -30,11 +32,15 @@ export const AuthProvider = ({ children }) => {
       })
       .catch((error) => {
         console.error("Erro ao buscar detalhes do usuario:", error.message);
+        setUser(null);
+        setTechListData([]);
         localStorage.removeItem("token");
         localStorage.removeItem("user");
+        delete API.defaults.headers.common.Authorization;
       })
       .finally(() => {
         setLoading(false);
+        setAuthReady(true);
       });
   }, []);
 
@@ -48,6 +54,7 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
       API.defaults.headers.common.Authorization = `Bearer ${token}`;
+      setAuthReady(true);
     } catch (error) {
       console.error("Erro ao fazer login:", error.message);
       throw error;
@@ -66,9 +73,11 @@ export const AuthProvider = ({ children }) => {
 
   const signOut = (routerNavigate) => {
     setUser(null);
+    setTechListData([]);
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     delete API.defaults.headers.common.Authorization;
+    setAuthReady(true);
 
     showToast("Logout realizado com sucesso!", "success");
 
@@ -101,6 +110,7 @@ export const AuthProvider = ({ children }) => {
     <AuthContext.Provider
       value={{
         loading,
+        authReady,
         user,
         signIn,
         signUp,

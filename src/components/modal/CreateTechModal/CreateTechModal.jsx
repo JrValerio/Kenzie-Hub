@@ -30,8 +30,11 @@ export const CreateTechModal = ({ open, onClose }) => {
   });
 
   const onSubmit = async (newTech) => {
-    await addTech(newTech);
-    onClose();
+    const wasCreated = await addTech(newTech);
+
+    if (wasCreated) {
+      onClose();
+    }
   };
 
   return (

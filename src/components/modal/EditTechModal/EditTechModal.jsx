@@ -30,17 +30,16 @@ export const EditTechModal = ({ open, onClose, tech }) => {
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setEditTechData({ ...editTechData, [name]: value });
+    setEditTechData((previousData) => ({ ...previousData, [name]: value }));
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    try {
-      await updateTech(tech.id, editTechData);
+    const wasUpdated = await updateTech(tech.id, editTechData);
+
+    if (wasUpdated) {
       onClose();
-    } catch (error) {
-      console.error("Erro ao editar tecnologia", error);
     }
   };
 
