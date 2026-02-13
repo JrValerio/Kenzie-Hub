@@ -4,6 +4,7 @@
 .btn {
   width: 18.5rem;
   height: 2.4065rem;
+  display: inline-flex;
   padding: 0rem 1.39588rem;
   justify-content: center;
   align-items: center;
@@ -13,6 +14,7 @@
   border-radius: 4px;
   font-family: $font-primary;
   font-weight: bold;
+  text-decoration: none;
   cursor: pointer;
   transition: background-color 0.3s;
 
