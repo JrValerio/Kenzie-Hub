@@ -58,7 +58,7 @@ No servico da API:
 
 - Root Directory: `api`
 - Build Command: `npm install`
-- Start Command: `npm run start`
+- Start Command: `npm run start:prod`
 
 Variaveis no servico:
 
@@ -72,6 +72,14 @@ Depois do primeiro deploy, rode migration:
 ```bash
 npm run migrate:deploy
 ```
+
+Opcional (conta demo):
+
+```bash
+npm run seed
+```
+
+O `start:prod` executa `db:wait` antes de subir a API.
 
 Healthcheck:
 

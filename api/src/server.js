@@ -9,6 +9,7 @@ import { prisma } from "./prisma.js";
 
 const app = express();
 const PORT = Number(globalThis.process?.env?.PORT || 3333);
+const HOST = globalThis.process?.env?.HOST || "0.0.0.0";
 const NODE_ENV = globalThis.process?.env?.NODE_ENV || "development";
 const FRONTEND_URL = globalThis.process?.env?.FRONTEND_URL || "";
 const allowedOrigins = FRONTEND_URL.split(",")
@@ -354,8 +355,8 @@ app.delete("/users/techs/:techId", authMiddleware, async (request, response) => 
   }
 });
 
-const server = app.listen(PORT, () => {
-  console.log(`Kenzie Hub API listening on http://localhost:${PORT}`);
+const server = app.listen(PORT, HOST, () => {
+  console.log(`Kenzie Hub API listening on http://${HOST}:${PORT}`);
 });
 
 const shutdown = async () => {

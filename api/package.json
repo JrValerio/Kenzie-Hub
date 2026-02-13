@@ -10,6 +10,8 @@
   "scripts": {
     "dev": "node --watch src/server.js",
     "start": "node src/server.js",
+    "db:wait": "node scripts/wait-for-db.js",
+    "start:prod": "npm run db:wait && npm run start",
     "postinstall": "prisma generate",
     "generate": "prisma generate",
     "migrate:dev": "prisma migrate dev",
@@ -23,6 +25,7 @@
     "dotenv": "^17.2.4",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
-    "prisma": "^6.19.2"
+    "prisma": "^6.19.2",
+    "wait-on": "^9.0.4"
   }
 }
