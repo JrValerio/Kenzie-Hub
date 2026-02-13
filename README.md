@@ -3,107 +3,135 @@
 ![CI](https://github.com/JrValerio/Kenzie-Hub/actions/workflows/ci.yml/badge.svg)
 ![Kenzie Hub](./src/assets/KenzieHub.png)
 
-Aplicação fullstack com frontend React (Vite) e API própria (Express + JWT + Prisma/Postgres), configurada por ambiente, CORS por allowlist e domínio validado/normalizado. O CI roda lint/build no frontend e testes de API com Supertest.
+Production-ready fullstack application built with React (Vite) and a custom Express API secured with JWT and backed by PostgreSQL (Prisma ORM). The project uses environment-safe configuration, CORS allowlist, and automated CI checks for frontend and API.
 
-## Links Importantes
+## Important Links
 
-- Aplicação: https://kenzie-hub-seven-blue.vercel.app/
-- Código-fonte: https://github.com/JrValerio/Kenzie-Hub
+- Application: https://kenzie-hub-seven-blue.vercel.app/
+- Source code: https://github.com/JrValerio/Kenzie-Hub
+
+## Tech Stack
+
+**Frontend**
+
+- React + Vite
+- React Router
+- Axios
+- SCSS
+- Context API
+
+**Backend**
+
+- Express
+- JWT authentication
+- Prisma ORM
+- PostgreSQL
+
+**DevOps and Quality**
+
+- Vercel (frontend hosting)
+- Railway (API + database)
+- GitHub Actions (CI)
+- Supertest + Vitest (API testing)
+
+## Architecture
+
+```text
+Frontend (Vercel / React)
+        |
+        v
+API (Railway / Express + JWT)
+        |
+        v
+PostgreSQL (Railway)
+```
 
 ## Quick Start
 
 ```bash
-# instalar dependências do frontend (raiz)
+# install frontend dependencies (root)
 npm ci
 
-# instalar dependências da API
+# install API dependencies
 npm --prefix api ci
 
-# rodar frontend + API juntos
+# run frontend + API together
 npm run dev:all
 ```
 
-Para rodar em terminais separados:
+Run in separate terminals:
 
 ```bash
 npm run dev:api
 npm run dev
 ```
 
-Testes da API:
+API tests:
 
 ```bash
 npm --prefix api run test
 ```
 
-## Funcionalidades
+## Features
 
-- Cadastro de usuário
-- Login e logout
-- Persistência de sessão via JWT
-- Dashboard privada
-- CRUD de tecnologias
+- User registration
+- Login and logout
+- JWT session persistence
+- Private dashboard
+- Technology CRUD
 
-## Destaques
+## Why This Project
 
-- Integração de frontend React com API REST.
-- API incluída (Express + JWT + Prisma/Postgres) para rodar sem depender de endpoints externos.
-- Configuração segura via ambiente: `JWT_SECRET` obrigatório em produção e CORS por allowlist (`FRONTEND_URL`).
+This project demonstrates:
 
-## Estrutura
+- End-to-end authentication flow with protected routes.
+- Domain validation and normalization across frontend and backend.
+- Environment-safe configuration for local and production.
+- Production deployment with CI gates for lint, build, and tests.
+- Secure CORS strategy based on allowlist.
 
-- `src/components`: componentes reutilizáveis
-- `src/pages`: páginas da aplicação
-- `src/providers`: contextos de estado
-- `src/routers`: rotas públicas e privadas
-- `src/services`: camada de API do frontend
-- `src/styles`: estilos (SCSS)
+## Highlights
+
+- React frontend integrated with a dedicated REST API.
+- Monorepo includes its own backend, removing reliance on unstable third-party endpoints.
+- Production guardrails: required `JWT_SECRET` and restricted CORS via `FRONTEND_URL`.
+
+## Project Structure
+
+- `src/components`: reusable UI components
+- `src/pages`: application pages
+- `src/providers`: app state contexts
+- `src/routers`: public and private routing
+- `src/services`: frontend API layer
+- `src/styles`: SCSS styles
 - `api`: backend (Express + Prisma + PostgreSQL)
 
-## Arquitetura
+## Frontend Configuration
 
-```text
-┌────────────────────────────┐
-│ Frontend (Vercel / React)  │
-└──────────────┬─────────────┘
-               │
-               ▼
-┌────────────────────────────────────┐
-│ API (Railway / Express + JWT)      │
-└──────────────┬─────────────────────┘
-               │
-               ▼
-┌────────────────────────────┐
-│ PostgreSQL (Railway)       │
-└────────────────────────────┘
-```
+The frontend uses `VITE_API_URL` to target the API.
+In development, if `VITE_API_URL` is not defined, fallback is `http://localhost:3333`.
 
-## Configuração (Frontend)
-
-O frontend usa `VITE_API_URL` para apontar para a API.
-Em desenvolvimento, se `VITE_API_URL` não estiver definida, o fallback é `http://localhost:3333`.
-
-1. Crie `.env` na raiz:
+1. Create `.env` at the project root:
 
 ```bash
 VITE_API_URL=http://localhost:3333
 ```
 
-Você também pode copiar de `.env.example`:
+You can also copy from `.env.example`:
 
 ```bash
 cp .env.example .env
 ```
 
-2. Rode tudo:
+2. Start everything:
 
 ```bash
 npm run dev:all
 ```
 
-## API Local
+## Local API
 
-A API local está em `api/` e expõe:
+The local API lives in `api/` and exposes:
 
 - `POST /sessions`
 - `POST /users`
@@ -112,15 +140,15 @@ A API local está em `api/` e expõe:
 - `PUT /users/techs/:techId`
 - `DELETE /users/techs/:techId`
 
-Instalação da API:
+API setup:
 
 ```bash
 cd api
-npm install
+npm ci
 ```
 
-Configure `api/.env` com base em `api/.env.example`.
-Rode migrações antes de iniciar a API pela primeira vez:
+Configure `api/.env` based on `api/.env.example`.
+Run migrations before starting the API for the first time:
 
 ```bash
 cd api
@@ -130,40 +158,40 @@ npm run seed
 
 ## Deployment (Vercel + Railway)
 
-Este projeto roda em produção com:
+This project runs in production with:
 
 - Frontend: Vercel (React + Vite)
 - API: Railway (Express + JWT + Prisma)
-- Banco: Railway PostgreSQL
+- Database: Railway PostgreSQL
 
-### Deploy da API no Railway (monorepo)
+### Deploy API on Railway (Monorepo)
 
-1. Crie um projeto no Railway e conecte este repositório.
-2. Adicione um PostgreSQL no mesmo projeto.
-3. Configure o serviço da API:
+1. Create a Railway project and connect this repository.
+2. Add a PostgreSQL service in the same Railway project.
+3. Configure API service settings:
 
 - Root Directory: `api`
 - Build Command: `npm install`
 - Start Command: `npm run start:prod`
 
-4. Configure variáveis de ambiente no serviço da API:
+4. Configure API environment variables:
 
 ```bash
 NODE_ENV=production
-JWT_SECRET=um-segredo-forte
+JWT_SECRET=your-strong-secret
 FRONTEND_URL=https://kenzie-hub-seven-blue.vercel.app
 DATABASE_URL=postgresql://...
 ```
 
-Em `NODE_ENV=production`, `FRONTEND_URL` é obrigatório para CORS por allowlist.
+In `NODE_ENV=production`, `FRONTEND_URL` is required for CORS allowlist.
 
-5. Após o primeiro deploy, aplique as migrações:
+5. After first deploy, apply migrations:
 
 ```bash
 npm run migrate:deploy
 ```
 
-Opcional (conta demo):
+Optional (demo account):
 
 ```bash
 npm run seed
@@ -173,69 +201,77 @@ Healthcheck:
 
 - `GET /health` -> `{ "status": "ok" }`
 
-### Deploy do Frontend no Vercel
+### Deploy Frontend on Vercel
 
-1. Configure a variavel de ambiente:
+1. Configure environment variable:
 
 ```bash
-VITE_API_URL=https://SUA-API.railway.app
+VITE_API_URL=https://YOUR-API.railway.app
 ```
 
-2. Rode um novo deploy.
+2. Trigger a new deploy.
 
 ### Production URLs
 
-- Frontend: `https://SEU-FRONT.vercel.app`
-- API: `https://SUA-API.railway.app`
+- Frontend: `https://YOUR-FRONT.vercel.app`
+- API: `https://YOUR-API.railway.app`
 
-### Security Notes
+## Security Model
 
-- `JWT_SECRET` deve ser forte e exclusivo por ambiente.
-- `FRONTEND_URL` deve apontar apenas para o domínio do frontend em produção.
+- JWT issued on login (`POST /sessions`)
+- Stateless authentication via bearer token
+- Protected routes enforced by middleware
+- CORS restricted to production frontend domain (`FRONTEND_URL`)
+- Secrets and connection strings managed through environment variables
 
-### Checklist de validação (produção)
+## Security Notes
 
-- Registrar usuário (`POST /users`) -> `201`
+- `JWT_SECRET` must be strong and unique per environment.
+- `FRONTEND_URL` must point only to the official frontend domain in production.
+- `.env` files must stay out of version control.
+
+### Production Validation Checklist
+
+- Register user (`POST /users`) -> `201`
 - Login (`POST /sessions`) -> `200` + token
-- Perfil (`GET /profile`) -> `200`
-- Criar tech (`POST /users/techs`) -> `201`
-- Editar tech (status acentuado/ASCII) -> `200`
-- Status inválido -> `400`
+- Profile (`GET /profile`) -> `200`
+- Create tech (`POST /users/techs`) -> `201`
+- Update tech (accented or ASCII status) -> `200`
+- Invalid status -> `400`
 - Delete tech -> `204`
 
-## Case Study - Evolução para Mini-Produto
+## Case Study - From Academic Project to Mini-Product
 
-Este projeto começou como uma aplicação acadêmica dependente de API externa instável.
-A evolução técnica incluiu:
+Originally built as an academic project, this application was redesigned into a production-ready mini-product with its own backend, secure authentication, and CI pipeline.
 
-### Arquitetura
+### Architecture Evolution
 
-- Remoção de dependência externa.
-- Criação de API própria (`Express + JWT`).
-- Migração de persistência em arquivo para Postgres com Prisma.
+- Removed external API dependency.
+- Built dedicated backend (`Express + JWT`).
+- Migrated persistence from file storage to PostgreSQL with Prisma.
 
-### Segurança
+### Security Hardening
 
-- `JWT_SECRET` obrigatório em produção.
-- CORS restrito por `FRONTEND_URL` (allowlist).
-- `.env` isolado e ignorado no versionamento.
+- `JWT_SECRET` required in production.
+- CORS restricted by `FRONTEND_URL` (allowlist).
+- `.env` isolated and ignored in version control.
 
-### Domínio consistente
+### Domain Consistency
 
-- Validação e normalização de status de tecnologia.
-- Compatibilidade com entradas acentuadas e variações de encoding.
-- Fonte única de verdade para regras de domínio (front + backend).
+- Technology status validation and normalization.
+- Compatibility with accented and ASCII input variants.
+- Single source of truth for domain rules across frontend and backend.
 
-### Engenharia e Qualidade
+### Engineering and Quality
 
-- Script único `dev:all` (frontend + backend).
-- Testes de API com Supertest (auth + CRUD + rotas protegidas).
-- CI automático com lint/build/test em push e pull request.
+- Single `dev:all` script (frontend + backend).
+- API tests with Supertest (auth + CRUD + protected routes).
+- Automatic CI with lint/build/test on push and pull request.
 
-## Decisões Técnicas
+## Technical Decisions
 
-- CORS por allowlist: API aceita apenas o domínio oficial do frontend em produção.
-- Separacao `app` e `server`: facilita testes sem subir listener HTTP.
-- Prisma + Postgres: persistência transacional e schema versionado por migration.
-- Status de tecnologia normalizado: evita inconsistências de acento/encoding.
-- CI obrigatório: valida frontend e API em todo push para `main`.
+- CORS allowlist: API only accepts the official frontend domain in production.
+- `app` and `server` separation: enables testing without starting HTTP listener.
+- Prisma + PostgreSQL: transactional persistence and migration-based schema versioning.
+- Normalized technology status: prevents accent/encoding inconsistencies.
+- Mandatory CI: validates frontend and API on every push to `main`.
