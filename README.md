@@ -1,9 +1,9 @@
 # Kenzie Hub
 
 ![CI](https://github.com/JrValerio/Kenzie-Hub/actions/workflows/ci.yml/badge.svg)
-![Kenzie Hub](https://github.com/Kenzie-Academy-Brasil-Developers/react-entrega-kenzie-hub-JrValerio/blob/main/src/assets/KenzieHub.png)
+![Kenzie Hub](./src/assets/KenzieHub.png)
 
-Aplicacao fullstack com frontend React e API propria (Express + JWT + Prisma/Postgres), configurada por ambiente, CORS por allowlist e dominio validado/normalizado. Pipeline previsivel com `dev:all`, `lint`/`build`/`audit` verdes.
+Aplicacao fullstack com frontend React (Vite) e API propria (Express + JWT + Prisma/Postgres), configurada por ambiente, CORS por allowlist e dominio validado/normalizado. O CI roda lint/build no frontend e testes de API com Supertest.
 
 ## Links Importantes
 
@@ -13,9 +13,26 @@ Aplicacao fullstack com frontend React e API propria (Express + JWT + Prisma/Pos
 ## Quick Start
 
 ```bash
+# instalar dependencias do frontend (raiz)
 npm ci
-npm run dev
+
+# instalar dependencias da API
 npm --prefix api ci
+
+# rodar frontend + API juntos
+npm run dev:all
+```
+
+Para rodar em terminais separados:
+
+```bash
+npm run dev:api
+npm run dev
+```
+
+Testes da API:
+
+```bash
 npm --prefix api run test
 ```
 
@@ -40,13 +57,25 @@ npm --prefix api run test
 - `src/providers`: contextos de estado
 - `src/routers`: rotas publicas e privadas
 - `src/services`: camada de API do frontend
-- `src/styles`: estilos globais e por componente
+- `src/styles`: estilos (SCSS)
 - `api`: backend (Express + Prisma + PostgreSQL)
 
-## Configuracao da API (Frontend)
+## Arquitetura
 
-A URL antiga (`https://kenziehub.herokuapp.com`) nao esta mais estavel.
-O frontend usa `VITE_API_URL` e fallback para `http://localhost:3333` em desenvolvimento.
+```text
+Frontend (Vercel / React)
+        |
+        v
+API (Railway / Express + JWT + Prisma)
+        |
+        v
+PostgreSQL (Railway)
+```
+
+## Configuracao (Frontend)
+
+O frontend usa `VITE_API_URL` para apontar para a API.
+Em desenvolvimento, se `VITE_API_URL` nao estiver definida, o fallback e `http://localhost:3333`.
 
 1. Crie `.env` na raiz:
 
@@ -54,25 +83,13 @@ O frontend usa `VITE_API_URL` e fallback para `http://localhost:3333` em desenvo
 VITE_API_URL=http://localhost:3333
 ```
 
-Voce pode copiar de `.env.example` e ajustar:
+Voce tambem pode copiar de `.env.example`:
 
 ```bash
 cp .env.example .env
 ```
 
-2. Rode API e frontend:
-
-```bash
-npm run dev:api
-```
-
-Em outro terminal:
-
-```bash
-npm run dev
-```
-
-Ou tudo em um comando:
+2. Rode tudo:
 
 ```bash
 npm run dev:all
@@ -128,7 +145,7 @@ Este projeto roda em producao com:
 ```bash
 NODE_ENV=production
 JWT_SECRET=um-segredo-forte
-FRONTEND_URL=https://SEU-FRONT.vercel.app
+FRONTEND_URL=https://kenzie-hub-seven-blue.vercel.app
 DATABASE_URL=postgresql://...
 ```
 
@@ -206,6 +223,13 @@ A evolucao tecnica incluiu:
 ### Engenharia e Qualidade
 
 - Script unico `dev:all` (frontend + backend).
-- `npm audit` zerado.
-- `lint` e `build` verdes.
-- Smoke test ponta a ponta validando fluxo completo.
+- Testes de API com Supertest (auth + CRUD + rotas protegidas).
+- CI automatico com lint/build/test em push e pull request.
+
+## Decisoes Tecnicas
+
+- CORS por allowlist: API aceita apenas o dominio oficial do frontend em producao.
+- Separacao `app` e `server`: facilita testes sem subir listener HTTP.
+- Prisma + Postgres: persistencia transacional e schema versionado por migration.
+- Status de tecnologia normalizado: evita inconsistencias de acento/encoding.
+- CI obrigatorio: valida frontend e API em todo push para `main`.
